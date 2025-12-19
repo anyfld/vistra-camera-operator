@@ -165,4 +165,3 @@ def list_ports():
     print("Available ports:")
     for port in ports:
         print(f"  {port.device}: {port.description}")
-

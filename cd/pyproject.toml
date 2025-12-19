@@ -11,4 +11,3 @@ dependencies = [
 [project.scripts]
 servo-controller = "interactive:main"
 servo-demo = "sample:main"
-
