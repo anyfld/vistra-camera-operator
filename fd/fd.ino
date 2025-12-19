@@ -10,11 +10,24 @@ int pos1 = 90;
 int pos2 = 90;
 
 void setup() {
-  servo1.attach(pin1);
-  servo2.attach(pin2);
+  servo1.attach(pin1, 500, 2500);
+  servo2.attach(pin2, 500, 2500);
   Serial.begin(115200);
-  servo1.write(pos1);
-  servo2.write(pos2);
+  
+  // 初期位置にゆっくり移動
+  int startPos = 0;
+  int stepDelay = 20; // 各ステップ間の遅延（ミリ秒）
+  
+  for (int angle = startPos; angle <= pos1; angle++) {
+    servo1.write(angle);
+    delay(stepDelay);
+  }
+  
+  for (int angle = startPos; angle <= pos2; angle++) {
+    servo2.write(angle);
+    delay(stepDelay);
+  }
+  
   Serial.println("READY");
 }
 
