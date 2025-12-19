@@ -17,6 +17,7 @@ jobs:
       - lint
       - format-check
       - type-check
+      - arduino-build
     steps:
       - uses: actions/checkout@v5
       - name: Check all-status-check
@@ -61,3 +62,20 @@ jobs:
         run: uv sync --dev
       - name: Run Type Checker
         run: uvx ty check
+
+  arduino-build:
+    name: Arduino Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+      - name: Update core index
+        run: arduino-cli core update-index
+      - name: Install Arduino AVR core
+        run: arduino-cli core install arduino:avr
+      - name: Install Servo library
+        run: arduino-cli lib install Servo
+      - name: Build Arduino sketch
+        run: arduino-cli compile --fqbn arduino:avr:uno fd
