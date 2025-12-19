@@ -1,0 +1,58 @@
+#include <Servo.h>
+
+Servo servo1;
+Servo servo2;
+
+const int pin1 = 9;
+const int pin2 = 10;
+
+int pos1 = 90;
+int pos2 = 90;
+
+void setup() {
+  servo1.attach(pin1);
+  servo2.attach(pin2);
+  Serial.begin(115200);
+  servo1.write(pos1);
+  servo2.write(pos2);
+  Serial.println("READY");
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    int servoID = Serial.parseInt();
+    int targetAngle = Serial.parseInt();
+
+    while (Serial.available() > 0) {
+      Serial.read();
+    }
+
+    if (targetAngle < 0 || targetAngle > 180) {
+      Serial.println("ERROR");
+      return;
+    }
+
+    if (servoID == 1) {
+      servo1.write(targetAngle);
+      pos1 = targetAngle;
+      Serial.print("POS:");
+      Serial.print(pos1);
+      Serial.print(",");
+      Serial.println(pos2);
+    } else if (servoID == 2) {
+      servo2.write(targetAngle);
+      pos2 = targetAngle;
+      Serial.print("POS:");
+      Serial.print(pos1);
+      Serial.print(",");
+      Serial.println(pos2);
+    } else if (servoID == 0) {
+      Serial.print("POS:");
+      Serial.print(pos1);
+      Serial.print(",");
+      Serial.println(pos2);
+    } else {
+      Serial.println("ERROR");
+    }
+  }
+}
