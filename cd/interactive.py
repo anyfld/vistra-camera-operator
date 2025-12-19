@@ -21,24 +21,24 @@ def interactive_mode(controller: ServoController):
             user_input = input(">> ").strip().lower()
             if not user_input:
                 continue
-            if user_input in ['quit', 'q']:
+            if user_input in ["quit", "q"]:
                 break
-            elif user_input == 'center':
+            elif user_input == "center":
                 controller.center_all()
-            elif user_input == 'status':
+            elif user_input == "status":
                 pos = controller.get_positions()
                 print(f"Servo 1: {pos[1]}°, Servo 2: {pos[2]}°")
                 print(f"Speed: {controller.step_delay * 1000:.1f}ms/step")
-            elif user_input.startswith('speed,'):
-                parts = user_input.split(',')
+            elif user_input.startswith("speed,"):
+                parts = user_input.split(",")
                 if len(parts) == 2:
                     controller.set_speed(float(parts[1]))
-            elif user_input.startswith('both,'):
-                parts = user_input.split(',')
+            elif user_input.startswith("both,"):
+                parts = user_input.split(",")
                 if len(parts) == 3:
                     controller.move_both(int(parts[1]), int(parts[2]))
-            elif ',' in user_input:
-                parts = user_input.split(',')
+            elif "," in user_input:
+                parts = user_input.split(",")
                 if len(parts) == 2:
                     controller.move_servo(int(parts[0]), int(parts[1]))
             else:
@@ -52,12 +52,12 @@ def interactive_mode(controller: ServoController):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port')
-    parser.add_argument('-b', '--baudrate', type=int, default=115200)
-    parser.add_argument('-l', '--list-ports', action='store_true')
-    parser.add_argument('-s', '--servo', type=int, choices=[1, 2])
-    parser.add_argument('-a', '--angle', type=int)
-    parser.add_argument('--speed', type=float, default=15)
+    parser.add_argument("-p", "--port")
+    parser.add_argument("-b", "--baudrate", type=int, default=115200)
+    parser.add_argument("-l", "--list-ports", action="store_true")
+    parser.add_argument("-s", "--servo", type=int, choices=[1, 2])
+    parser.add_argument("-a", "--angle", type=int)
+    parser.add_argument("--speed", type=float, default=15)
 
     args = parser.parse_args()
 
@@ -78,5 +78,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

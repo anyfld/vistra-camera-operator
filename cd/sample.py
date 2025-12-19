@@ -68,8 +68,8 @@ def run_demo(ctrl: ServoController):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port')
-    parser.add_argument('-b', '--baudrate', type=int, default=115200)
+    parser.add_argument("-p", "--port")
+    parser.add_argument("-b", "--baudrate", type=int, default=115200)
 
     args = parser.parse_args()
     print("Starting demo...")
@@ -78,5 +78,5 @@ def main():
         run_demo(ctrl)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

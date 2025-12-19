@@ -8,7 +8,9 @@ from typing import Optional
 
 
 class ServoController:
-    def __init__(self, port: str = None, baudrate: int = 115200, timeout: float = 2.0):
+    def __init__(
+        self, port: Optional[str] = None, baudrate: int = 115200, timeout: float = 2.0
+    ):
         self.port = port or self._find_arduino_port()
         self.baudrate = baudrate
         self.timeout = timeout
@@ -20,18 +22,19 @@ class ServoController:
     def _find_arduino_port(self) -> str:
         ports = serial.tools.list_ports.comports()
         for port in ports:
-            if any(keyword in port.description.lower() for keyword in ['arduino', 'ch340', 'ftdi', 'usb']):
+            if any(
+                keyword in port.description.lower()
+                for keyword in ["arduino", "ch340", "ftdi", "usb"]
+            ):
                 return port.device
-            if 'usbmodem' in port.device or 'usbserial' in port.device:
+            if "usbmodem" in port.device or "usbserial" in port.device:
                 return port.device
         raise RuntimeError("Arduino not found")
 
     def connect(self) -> None:
         print(f"Connecting to {self.port}...")
         self.serial = serial.Serial(
-            port=self.port,
-            baudrate=self.baudrate,
-            timeout=self.timeout
+            port=self.port, baudrate=self.baudrate, timeout=self.timeout
         )
         time.sleep(2)
         while self.serial.in_waiting > 0:
@@ -49,18 +52,22 @@ class ServoController:
         print(f"Speed: {delay_ms}ms/step")
 
     def _send_command_fast(self, servo_id: int, angle: int) -> None:
+        assert self.serial is not None, "Serial connection not established"
         command = f"{servo_id},{angle}\n"
-        self.serial.write(command.encode('utf-8'))
+        self.serial.write(command.encode("utf-8"))
         self.servo_positions[servo_id] = angle
 
     def _send_command(self, servo_id: int, angle: int) -> tuple[int, int]:
+        assert self.serial is not None, "Serial connection not established"
         with self._lock:
             command = f"{servo_id},{angle}\n"
-            self.serial.write(command.encode('utf-8'))
+            self.serial.write(command.encode("utf-8"))
             start_time = time.time()
             while time.time() - start_time < 1.0:
                 if self.serial.in_waiting > 0:
-                    line = self.serial.readline().decode('utf-8', errors='ignore').strip()
+                    line = (
+                        self.serial.readline().decode("utf-8", errors="ignore").strip()
+                    )
                     if line.startswith("POS:"):
                         parts = line[4:].split(",")
                         if len(parts) == 2:
@@ -74,6 +81,7 @@ class ServoController:
             return self.servo_positions[1], self.servo_positions[2]
 
     def _flush_input(self) -> None:
+        assert self.serial is not None, "Serial connection not established"
         while self.serial.in_waiting > 0:
             self.serial.read(self.serial.in_waiting)
 
